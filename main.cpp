@@ -35,7 +35,7 @@ int main()
 {
 	constexpr std::size_t ROWS = 4;
 	constexpr std::size_t COLS = 4;
-	std::array<int, ROWS * COLS> board;
+	std::array<int, ROWS* COLS> board{};
 
 	std::iota(board.begin(), board.end(), 0);
 	std::shuffle(board.begin(), board.end(), std::random_device{});
@@ -43,7 +43,7 @@ int main()
 	auto it = std::find(board.begin(), board.end(), 0);
 	std::size_t emptyPosition = std::distance(board.begin(), it);
 	bool win = false;
-	std::size_t step = 1;
+	std::size_t step = 0;
 
 	while (true)
 	{
@@ -53,6 +53,7 @@ int main()
 			if (board[i] != i + 1)
 			{
 				win = false;
+				break;
 			}
 		}
 
@@ -61,6 +62,7 @@ int main()
 			std::system("cls");
 			printBoard(std::cout, board, ROWS, COLS);
 			std::cout << "\nYou win!\n";
+			std::cout << "You've taken " << step << " moves\n";
 			break;
 		}
 
@@ -70,6 +72,7 @@ int main()
 		std::size_t move = 0;
 		std::cout << "\nYour move: ";
 		std::cin >> move;
+		++step;
 
 		if (!std::cin)
 		{
