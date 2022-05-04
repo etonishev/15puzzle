@@ -30,6 +30,33 @@ void printBoard(std::ostream& os, const std::array<int, size>& board, std::size_
 	}
 }
 
+template<std::size_t size>
+bool isSolvable(const std::array<int, size>& board) {
+	std::size_t n = 0;
+	std::size_t emptyPosition = 0;
+	for (std::size_t i = 0; i < board.size() - 1; ++i) 
+	{
+		for (std::size_t j = i + 1; j < board.size(); ++j) 
+		{
+			if (board[j] == 0)
+			{
+				emptyPosition = j;
+				continue;
+			}
+
+			if (board[i] > board[j])
+			{
+				++n;
+			}
+		}
+	}
+
+	std::size_t sideSize = std::sqrt(board.size());
+	n = n + (emptyPosition / sideSize) + 1;
+	
+	return n % 2 == 0;
+}
+
 
 int main()
 {
@@ -39,6 +66,10 @@ int main()
 
 	std::iota(board.begin(), board.end(), 0);
 	std::shuffle(board.begin(), board.end(), std::random_device{});
+
+	while (!isSolvable(board)) {
+		std::shuffle(board.begin(), board.end(), std::random_device{});
+	}
 
 	auto it = std::find(board.begin(), board.end(), 0);
 	std::size_t emptyPosition = std::distance(board.begin(), it);
