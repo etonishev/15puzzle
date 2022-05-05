@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
@@ -60,6 +61,18 @@ bool isSolvable(const std::array<int, size>& board) {
 
 int main()
 {
+	std::fstream statFile("stats.txt", std::ios::in);
+
+	std::size_t gamesCount = 0;
+	std::size_t moves = 0;
+
+	if (statFile)
+	{
+		statFile >> gamesCount >> moves;
+	}
+
+	statFile.close();
+
 	constexpr std::size_t ROWS = 4;
 	constexpr std::size_t COLS = 4;
 	std::array<int, ROWS* COLS> board{};
@@ -74,7 +87,7 @@ int main()
 	auto it = std::find(board.begin(), board.end(), 0);
 	std::size_t emptyPosition = std::distance(board.begin(), it);
 	bool win = false;
-	std::size_t step = 0;
+	std::size_t movesCount = 0;
 
 	while (true)
 	{
@@ -93,7 +106,17 @@ int main()
 			std::system("cls");
 			printBoard(std::cout, board, ROWS, COLS);
 			std::cout << "\nYou win!\n";
-			std::cout << "You've taken " << step << " moves\n";
+			std::cout << "You've taken " << movesCount << " moves\n";
+
+			++gamesCount;
+			moves = moves + movesCount;
+
+			std::cout << "You've won " << gamesCount << " games\n";
+			std::cout << "Average moves per game is " << moves / gamesCount << '\n';
+
+			statFile.open("stats.txt", std::ios::trunc | std::ios::out);
+			statFile << gamesCount << ' ' << moves;
+			
 			break;
 		}
 
@@ -103,7 +126,7 @@ int main()
 		std::size_t move = 0;
 		std::cout << "\nYour move: ";
 		std::cin >> move;
-		++step;
+		++movesCount;
 
 		if (!std::cin)
 		{
